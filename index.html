@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>爱尚音乐-WEB</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="css/scroll.css">
+	<link rel="stylesheet" type="text/css" href="css/xiami.css">
+	<link rel="stylesheet" href="css/music.css">
+	<script type="text/javascript" src="js/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="js/jquery-ui.js"></script>
+	<script src='js/index.js'></script>
+	<script type="text/javascript" src="js/canvas.js"></script>
+	<script type="text/javascript" src="js/mousewheel.js"></script>
+	<script type="text/javascript" src="js/scroll.js"></script>
+	<script type="text/javascript" src="js/xiami.js"></script>
+</head>
+<body>
+
+	<audio src=""></audio>
+
+	<div class="m_player mini_version" id="divplayer" role="application" style="z-index: 100000; left: 0px;">
+	    <div class="m_player_dock" id="divsongframe">
+	        <div class="music_info" id="divsonginfo">
+	            <a target="contentFrame" class="album_pic" title="">
+	                <img src="http://imgcache.qq.com/mediastyle/y/img/cover_mine_130.jpg" alt="" onerror="this.src='http://imgcache.qq.com/mediastyle/y/img/cover_mine_130.jpg'">
+	            </a>
+	            <div class="music_info_main">
+	                <p class="music_name" title="听我想听的歌！">
+	                    <span>
+	                        听我想听的歌！
+	                    </span>
+	                </p>
+	                <p class="singer_name" title="QQ音乐">
+	                    爱尚音乐
+	                </p>
+	                <p class="play_date" id="ptime">
+	                </p>
+	                <p class="music_op" style="display:none;">
+					    <strong class="btn_like" title="喜欢" onclick="g_topPlayer.like(g_topPlayer.getCurSongInfo(), this);MUSIC.event.cancelBubble();"
+					    name="myfav_001xBUtF3rgn7O" mid="001xBUtF3rgn7O">
+					        <span>
+					            我喜欢
+					        </span>
+					    </strong>
+					    <strong class="btn_share" title="分享" onclick="g_topPlayer.share(g_topPlayer.getCurSongInfo(), this);MUSIC.event.cancelBubble();">
+					        <span>
+					            分享
+					        </span>
+					    </strong>
+					    <strong class="btn_kge" onmouseover="this.className='btn_kge btn_kge_hover';this.style.zIndex='100';"
+					    onmouseout="this.className='btn_kge';this.style.zIndex='';" id="btnkge">
+					        <span>
+					            唱这首歌
+					        </span>
+					        <span class="kge_QRcode">
+					            <em>
+					                <img src="http://t.plcloud.music.qq.com/fcgi-bin/fcg_get_2dcode.fcg?width=130&amp;margin=1&amp;eclevel=4&amp;encode=1&amp;url=http%3A%2F%2Fy.qq.com%2Fkg%2Fhtml%2Fcontest%2Forder_dl.html%3F_wv%3D1%26kge_mid%3D00171UjC4UoZk4"
+					                alt="全民K歌二维码">
+					            </em>
+					            <em>
+					                手机扫描二维码，唱这首歌
+					            </em>
+					            <i class="kge_QRcode_logo">
+					            </i>
+					            <i class="kge_QRcode_arrow">
+					            </i>
+					        </span>
+					    </strong>
+					</p>
+	            </div>
+	        </div>
+	        <div class="bar_op">
+	            <strong title="上一首( [ )" class="prev_bt">
+	                <span>
+	                    上一首
+	                </span>
+	            </strong>
+	            <strong title="播放(P)" class="play_bt" id="btnplay">
+	                <span>
+	                    播放
+	                </span>
+	            </strong>
+	            <strong title="下一首( ] )" class="next_bt">
+	                <span>
+	                    下一首
+	                </span>
+	            </strong>
+	            <strong title="列表循环" class="cycle_bt" id="btnPlayway">
+	                <span>
+	                    列表循环
+	                </span>
+	            </strong>
+	            <p class="volume" title="音量调节">
+	                <span class="volume_icon" id="spanmute" title="点击设为静音(M)">
+	                </span>
+	                <span class="volume_regulate" id="spanvolume">
+	                    <span class="volume_bar" style="width:100%;" id="spanvolumebar">
+	                    </span>
+	                    <span class="volume_op" style="left:100%;" id="spanvolumeop">
+	                    </span>
+	                </span>
+	            </p>
+	        </div>
+	        <p class="playbar_cp_select" id="divselect" style="display: none;">
+			    <strong title="顺序播放" class="ordered_bt" onclick="playmode(2);">
+			        <span>
+			            顺序播放
+			        </span>
+			    </strong>
+			    <strong title="随机播放" class="unordered_bt" onclick="playmode(4);">
+			        <span>
+			            随机播放
+			        </span>
+			    </strong>
+			    <strong title="单曲循环" class="cycle_single_bt" onclick="playmode(1);">
+			        <span>
+			            单曲循环
+			        </span>
+			    </strong>
+			    <strong title="列表循环" class="cycle_bt" onclick="playmode(3);">
+			        <span>
+			            列表循环
+			        </span>
+			    </strong>
+			</p>
+	        <p class="player_bar">
+	            <span class="player_bg_bar" id="spanplayer_bgbar">
+	            </span>
+	            <span class="download_bar" id="downloadbar" style="width:0%;">
+	            </span>
+	            <span class="play_current_bar" style="width:0%;" id="spanplaybar">
+	            </span>
+	            <span class="progress_op" style="left:0%;" id="spanprogress_op">
+	            </span>
+	        </p>
+	        <div class="time_show" style="left: 446px; bottom: 8px; display: none;">
+				<p id="time_show"></p>
+				<span class="icon_arrow_foot">
+					<i class="foot_border"></i>
+					<i class="foot_arrow"></i>
+				</span>
+			</div>
+	    </div>
+	    
+	    <span title="展开播放列表" class="open_list" id="spansongnum1">
+	        <span>
+	            4
+	        </span>
+	    </span>
+	    <span title="显示歌词(L)" class="btn_lyrics_disabled" id="btnlrc">
+	        歌词(L)
+	    </span>
+	    <button type="button" class="folded_bt" title="点击收起" id="btnfold">
+	        <span>
+	            点击收起/展开
+	        </span>
+	    </button>
+	    <!--play list-->
+	    <div class="play_list_frame" id="divplayframe" style="display: block; opacity: 1;">
+	        <div class="play_list_title">
+	            <!-- 单曲FM修改 -->
+	            <ul id="tab_container" style="width:270px;">
+	                <li id="playlist_tab" class="current">
+	                    <a href="javascript:;" title="播放列表">
+	                        播放列表
+	                    </a>
+	                    <i>
+	                    </i>
+	                </li>
+	            </ul>
+	            <span id="clear_list" class="clear_list">
+	                清空列表
+	            </span>
+	            <strong title="收起播放列表" class="close_list" id="btnclose">
+	            </strong>
+	        </div>
+	        <div class="play_list" id="divlistmain">
+	            <!--列表为空提示_E-->
+	            <div class="play_list_main" id="divplaylist" style="display: block;">
+	                <!-- 播放列表_S-->
+	                <div class="single_list" id="divsonglist" dirid="0">
+	                    <ul> 
+	                    </ul>
+	                </div>
+	                <div id="divalbumlist" style="display:none;">
+	                </div>
+	            </div>
+	            <div class="play_list_scroll" style="top: 0px; display: none;">
+	                <span id="spanbar" class="play_list_scrolling" style="display: none;">
+	                </span>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	<!--模糊画布-->
+	<div class="blur">
+		<canvas style="width:1366px;height:700px;opacity:0;" width="1366" height="700" id="canvas">
+	</div>
+	<div class="playerMain">
+		<div class="top">
+			<a href="#" class="logo"></a>
+			<div class="search">
+				<div type="submit" class="searchBtn"></div>
+				<input type="text" class="searchTxt">
+			</div>
+			<div class="mainNav">
+				<div class="tipLogin">
+					马上
+					<a href="#" class="loginA">登录</a>
+				</div>
+				<a href="#" class="myroom"></a>
+			</div>
+		</div>
+		<div class="middle">
+			<div class="mainWrap">
+				<div class="leftBar">
+					<ul class="menuUL">
+						<li class="menuLi cur">
+							<a href="#">
+								<i class="icon iplay"></i>
+								正在播放
+							</a>
+						</li>
+						<li class="menuLi">
+							<a href="#">
+								<i class="icon ihst"></i>
+								播放历史
+							</a>
+						</li>
+						<li class="menuLi">
+							<a href="#">
+								<i class="icon ishouc"></i>
+								我收藏的单曲
+							</a>
+						</li>
+					</ul>
+					<div class="collectOut">
+						<span class="colS">我创建的精选集</span>
+						<a href="#" class="colA"></a>
+					</div>
+					<div class="cellectList"></div>
+					<audio id="audio" src="songs/1.mp3"></audio>			
+				</div>
+				<div class="mainBody">
+					<div class="playHd">
+						<div class="phInner">
+							<div class="col">歌曲(50)</div>
+							<div class="col">演唱者</div>
+							<div class="col">专辑</div>
+						</div>
+					</div>
+					<div class="playBd">
+						<div class="scrollView">
+							<!-- <div class="scroll"></div> -->
+							<ul class="songUL">
+								<li class="songList">
+									<div class="songLMain">
+										<div class="check">
+											<input class="checkIn" type="checkbox" select="0">
+										</div>
+										<div class="start" >
+											<em sonN="1">1</em>
+										</div>
+										<div class="songBd">
+											<div class="col colsn">盛夏光年</div>
+											<div class="col colcn">陈冰</div>
+											<div class="col">好声音第三季</div>
+										</div>
+										<div class="control">
+											<a class="cicon love"></a>
+											<a class="cicon more" style="display:none"></a>
+											<a class="cicon dele" style="display:none"></a>
+										</div>
+									</div>									
+								</li>
+								<li class="songList">
+									<div class="songLmain">
+										<div class="check">
+											<input class="checkIn" type="checkbox" select="0">
+										</div>
+										<div class="start" >
+											<em sonN="2">2</em>
+										</div>
+										<div class="songBd">
+											<div class="col colsn">漂洋过海来看你(Live)</div>
+											<div class="col colcn">刘明湘</div>
+											<div class="col">好声音第三季</div>
+										</div>
+										<div class="control">
+											<a class="cicon love"></a>
+											<a class="cicon more"></a>
+											<a class="cicon dele"></a>
+										</div>
+									</div>
+								</li>
+								<li class="songList">
+									<div class="songLmain">
+										<div class="check">
+											<input class="checkIn" type="checkbox" select="0">
+										</div>
+										<div class="start">
+											<em sonN="3">3</em>
+										</div>
+										<div class="songBd">
+											<div class="col colsn">Autobots Reunite</div>
+											<div class="col colcn">Steve Jablonsky</div>
+											<div class="col">《变形金刚4：绝迹重生》</div>
+										</div>
+										<div class="control">
+											<a class="cicon love"></a>
+											<a class="cicon more"></a>
+											<a class="cicon dele"></a>
+										</div>
+									</div>
+								</li>
+								<li class="songList">
+									<div class="songLmain">
+										<div class="check">
+											<input class="checkIn" type="checkbox" select="0">
+										</div>
+										<div class="start">
+											<em sonN="4">4</em>
+										</div>
+										<div class="songBd">
+											<div class="col colsn">Halo</div>
+											<div class="col colcn">Martin</div>
+											<div class="col">Halo Legends: Original Soundtrack</div>
+										</div>
+										<div class="control">
+											<a class="cicon love"></a>
+											<a class="cicon more"></a>
+											<a class="cicon dele"></a>
+										</div>
+									</div>
+								</li>
+								<li class="songList">
+									<div class="songLmain">
+										<div class="check">
+											<input class="checkIn" type="checkbox" select="0">
+										</div>
+										<div class="start">
+											<em sonN="5">5</em>
+										</div>
+										<div class="songBd">
+											<div class="col colsn">Pearl White Story</div>
+											<div class="col colcn">S.E.N.S</div>
+											<div class="col">君に届け 2ND SEASON オリジナル・サウンドトラック</div>
+										</div>
+										<div class="control">
+											<a class="cicon love"></a>
+											<a class="cicon more"></a>
+											<a class="cicon dele"></a>
+										</div>
+									</div>
+								</li>
+								<li class="songList">
+									<div class="songLmain">
+										<div class="check">
+											<input class="checkIn" type="checkbox" select="0">
+										</div>
+										<div class="start">
+											<em sonN="6">6</em>
+										</div>
+										<div class="songBd">
+											<div class="col colsn">break the sword of justice</div>
+											<div class="col colcn">梶浦由記</div>
+											<div class="col">NHKアニメーション ｢ツバサ・クロニクル｣ オリジナルサウンドトラック Future Soundscape I</div>
+										</div>
+										<div class="control">
+											<a class="cicon love"></a>
+											<a class="cicon more"></a>
+											<a class="cicon dele"></a>
+										</div>
+									</div>
+								</li>
+								<li class="songList">
+									<div class="songLmain">
+										<div class="check">
+											<input class="checkIn" type="checkbox" select="0">
+										</div>
+										<div class="start">
+											<em sonN="7">7</em>
+										</div>
+										<div class="songBd">
+											<div class="col colsn">The children</div>
+											<div class="col colcn">Ramin Djawadi</div>
+											<div class="col">《权力的游戏第四季》</div>
+										</div>
+										<div class="control">
+											<a class="cicon love"></a>
+											<a class="cicon more"></a>
+											<a class="cicon dele"></a>
+										</div>
+									</div>
+								</li>
+								<li class="songList">
+									<div class="songLmain">
+										<div class="check">
+											<input class="checkIn" type="checkbox" select="0">
+										</div>
+										<div class="start">
+											<em sonN="8">8</em>
+										</div>
+										<div class="songBd">
+											<div class="col colsn">Pacific Rim</div>
+											<div class="col colcn">Ramin Djawadi</div>
+											<div class="col">《环太平洋》</div>
+										</div>
+										<div class="control">
+											<a class="cicon love"></a>
+											<a class="cicon more"></a>
+											<a class="cicon dele"></a>
+										</div>
+									</div>
+								</li>
+								<li class="songList">
+									<div class="songLmain">
+										<div class="check">
+											<input class="checkIn" type="checkbox" select="0">
+										</div>
+										<div class="start">
+											<em sonN="9">9</em>
+										</div>
+										<div class="songBd">
+											<div class="col colsn">四つ葉のクローバー</div>
+											<div class="col colcn">林有三</div>
+											<div class="col">ハチミツとクローバー オリジナルサウンドトラック</div>
+										</div>
+										<div class="control">
+											<a class="cicon love"></a>
+											<a class="cicon more"></a>
+											<a class="cicon dele"></a>
+										</div>
+									</div>
+								</li>
+								<li class="songList">
+									<div class="songLmain">
+										<div class="check">
+											<input class="checkIn" type="checkbox" select="0">
+										</div>
+										<div class="start">
+											<em sonN="10">10</em>
+										</div>
+										<div class="songBd">
+											<div class="col colsn">Icarus</div>
+											<div class="col colcn">Ivan Torrent</div>
+											<div class="col">Icarus</div>
+										</div>
+										<div class="control">
+											<a class="cicon love"></a>
+											<a class="cicon more"></a>
+											<a class="cicon dele"></a>
+										</div>
+									</div>
+								</li>
+								<li class="songList">
+									<div class="songLmain">
+										<div class="check">
+											<input class="checkIn" type="checkbox" select="0">
+										</div>
+										<div class="start">
+											<em sonN="11">11</em>
+										</div>
+										<div class="songBd">
+											<div class="col colsn">th3 awak3n1ng</div>
+											<div class="col colcn">Ivan Torrent</div>
+											<div class="col">Icarus</div>
+										</div>
+										<div class="control">
+											<a class="cicon love"></a>
+											<a class="cicon more"></a>
+											<a class="cicon dele"></a>
+										</div>
+									</div>
+								</li>
+								<li class="songList"></li>
+							</ul>
+						</div>
+					</div>
+					<div class="playFt">
+						<div class="track">
+							<div class="uiCheck">
+								<input class="checkAll" type="checkbox" select="0">
+							</div>
+							<div class="uiItem">
+								<a href="#" class="itIcon itDele">删除</a>
+							</div>
+							<div class="uiItem">
+								<a href="#" class="itIcon itShou">收藏</a>
+							</div>
+							<div class="uiItem">
+								<a href="#" class="itIcon itJin">添加到精选集</a>
+							</div>
+							<div class="uiItem">
+								<a href="#" class="itIcon itMore">更多</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="mainOuther">
+					<div class="albumCover">
+						<a href="#">
+							<img src="images/2.jpg" id="canvas1">
+						</a>
+					</div>
+					<div class="albumSale">
+						<a href="#" class="asA">
+							<img src="">
+						</a>
+					</div>
+					<div id="lyr"></div>
+				</div>
+			</div>
+		</div>
+		<div class="bottom">
+			<div class="playerWrap">
+				<div class="playerCon">
+					<a href="#" class="pbtn prevBtn"></a>
+					<a href="#" class="pbtn playBtn" isplay="0"></a>
+					<a href="#" class="pbtn nextBtn"></a>
+					<a href="#" class="mode"></a>
+				</div>
+				<div class="playInfo">
+					<div class="trackInfo">
+						<a href="#" class="songName">漂洋过海来看你(Live)</a>
+						-
+						<a href="#" class="songPlayer">刘明湘</a>
+						<div class="trackCon">
+							<a href="#" class="tc1"></a>
+							<a href="#" class="tc2"></a>
+							<a href="#" class="tc3"></a>
+						</div>
+					</div>
+					<div class="playerLength">
+						<div class="position">00:00</div>
+						<div class="progress">
+							<div class="pro1"></div>
+							<div class="pro2">
+								<a href="#" class="dian"></a>
+							</div> 
+						</div>
+						<div class="duration">03:35</div>
+					</div>
+				</div>
+				<div class="vol">
+					<a href="#" class="pinBtn"></a>
+					<div class="volm">
+						<div class="volSpeaker"></div>
+						<div class="volControl">
+							<a href="#" class="dian2"></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
